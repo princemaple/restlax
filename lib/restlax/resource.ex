@@ -2,15 +2,6 @@ defmodule Restlax.Resource do
   @default_actions ~w(index show create update delete)a
   @can_be_singular [false, true, false, true, false]
 
-  @type action :: :index | :show | :create | :update | :delete
-  @type option ::
-          {:endpoint, String.t()}
-          | {:singular, boolean()}
-          | {:only, [action()]}
-          | {:except, [action()]}
-          | {:create_method, :post | :put}
-          | {:update_method, :put | :patch}
-
   @moduledoc """
   ## Rest Resource builder
 
@@ -32,6 +23,15 @@ defmodule Restlax.Resource do
           endpoint: "my-resource"
       end
   """
+
+  @type action :: :index | :show | :create | :update | :delete
+  @type option ::
+          {:endpoint, String.t()}
+          | {:singular, boolean()}
+          | {:only, [action()]}
+          | {:except, [action()]}
+          | {:create_method, :post | :put}
+          | {:update_method, :put | :patch}
 
   @spec __using__(opts :: [option()]) :: Macro.t()
   defmacro __using__(opts) do
