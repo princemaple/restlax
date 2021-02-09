@@ -3,10 +3,6 @@ defmodule ResourceTest do
 
   require HttpBin
 
-  setup_all do
-    Application.put_env(:testing, :rest_client, HttpBinClient)
-  end
-
   test "list" do
     assert {:ok,
             %{
