@@ -45,24 +45,24 @@ defmodule Restlax.Client do
     quote do
       use Tesla
 
-      adapter(unquote(adapter), unquote(adapter_opts))
+      adapter unquote(adapter), unquote(adapter_opts)
 
-      plug(Tesla.Middleware.Logger, unquote(logger_opts))
+      plug Tesla.Middleware.Logger, unquote(logger_opts)
 
-      plug(Tesla.Middleware.BaseUrl, unquote(base_url))
+      plug Tesla.Middleware.BaseUrl, unquote(base_url)
 
-      plug(Tesla.Middleware.PathParams)
+      plug Tesla.Middleware.PathParams
 
       case unquote(encoding) do
         :json ->
-          plug(Tesla.Middleware.JSON, unquote(encoding_opts))
+          plug Tesla.Middleware.JSON, unquote(encoding_opts)
 
         :form_url_encoded ->
-          plug(Tesla.Middleware.FormUrlencoded, unquote(encoding_opts))
+          plug Tesla.Middleware.FormUrlencoded, unquote(encoding_opts)
       end
 
       if unquote(headers) do
-        plug(Tesla.Middleware.Headers, unquote(headers))
+        plug Tesla.Middleware.Headers, unquote(headers)
       end
     end
   end
