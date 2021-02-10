@@ -3,6 +3,24 @@ defmodule ClientTest do
 
   require HttpBin
 
+  test "ok without adapter configured" do
+    assert {:ok,
+            %{
+              body: %{
+                "method" => "GET",
+                "url" => HttpBin.url("/anything/endpoint")
+              }
+            }} = HttpBinDefaultAdapterClient.get("/endpoint")
+  end
+
+  test "ok with custom adapter configured" do
+    import ExUnit.CaptureIO
+
+    capture_io("Got it in TestAdapter", fn ->
+      assert {:ok, _} = HttpBinCustomAdapterClient.get("/endpoint")
+    end)
+  end
+
   test "with leading slash" do
     assert {:ok,
             %{

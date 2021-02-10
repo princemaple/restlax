@@ -1,4 +1,7 @@
 :persistent_term.put({Restlax, :rest_client}, HttpBinClient)
 
-Code.require_file("support/http_bin.exs", __DIR__)
+for path <- Path.wildcard("#{__DIR__}/support/*.exs") do
+  Code.require_file(path)
+end
+
 ExUnit.start()

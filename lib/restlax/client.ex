@@ -24,7 +24,7 @@ defmodule Restlax.Client do
 
   @spec __using__(opts :: [option()]) :: Macro.t()
   defmacro __using__(opts) do
-    adapter = Keyword.fetch!(opts, :adapter)
+    adapter = Keyword.get(opts, :adapter)
     adapter_opts = Keyword.get(opts, :adapter_opts, [])
 
     logger_opts = Keyword.get(opts, :logger_opts, [])
@@ -45,7 +45,9 @@ defmodule Restlax.Client do
     quote do
       use Tesla
 
-      adapter unquote(adapter), unquote(adapter_opts)
+      if unquote(adapter) do
+        adapter unquote(adapter), unquote(adapter_opts)
+      end
 
       plug Tesla.Middleware.Logger, unquote(logger_opts)
 

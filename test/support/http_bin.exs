@@ -12,6 +12,18 @@ defmodule HttpBinClient do
     base_url: HttpBin.url("/anything")
 end
 
+defmodule HttpBinDefaultAdapterClient do
+  require HttpBin
+
+  use Restlax.Client, base_url: HttpBin.url("/anything")
+end
+
+defmodule HttpBinCustomAdapterClient do
+  require HttpBin
+
+  use Restlax.Client, adapter: TestAdapter, base_url: HttpBin.url("/anything")
+end
+
 defmodule HttpBinDefaultHeaderClient do
   require HttpBin
 
