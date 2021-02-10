@@ -50,17 +50,17 @@ defmodule ClientTest do
             }} = HttpBinClient.post("endpoint", %{test: %{data: ~w(a b c), count: 123}})
   end
 
-  test "sends headers" do
+  test "send headers" do
     assert {:ok, %{body: %{"headers" => %{"Test-Header" => "testing"}}}} =
              HttpBinClient.post("endpoint", %{}, headers: [{"test-header", "testing"}])
   end
 
-  test "header overriding" do
+  test "override header" do
     assert {:ok, %{body: %{"headers" => %{"Test-Header" => "test overriding"}}}} =
              HttpBinClient.post("endpoint", %{}, headers: [{"test-header", "test overriding"}])
   end
 
-  test "path params" do
+  test "interpolate path params" do
     assert {:ok, %{url: "http://localhost/anything/endpoint/123"}} =
              HttpBinClient.post("endpoint/:id", %{}, opts: [path_params: [id: 123]])
   end
