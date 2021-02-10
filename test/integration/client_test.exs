@@ -64,4 +64,17 @@ defmodule ClientTest do
     assert {:ok, %{url: "http://localhost/anything/endpoint/123"}} =
              HttpBinClient.post("endpoint/:id", %{}, opts: [path_params: [id: 123]])
   end
+
+  test "additional middleware" do
+    require HttpBinBasicAuthClient
+
+    assert {:ok,
+            %{
+              body: %{
+                "headers" => %{
+                  "Authorization" => "Basic #{HttpBinBasicAuthClient.hash()}"
+                }
+              }
+            }} = HttpBinBasicAuthClient.get("/endpoint")
+  end
 end

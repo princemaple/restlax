@@ -33,3 +33,18 @@ defmodule HttpBinDefaultHeaderClient do
     base_url: HttpBin.url("/anything"),
     headers: [{"test-header", "testing"}]
 end
+
+defmodule HttpBinBasicAuthClient do
+  require HttpBin
+
+  use Restlax.Client, base_url: HttpBin.url("/anything")
+
+  @username "test"
+  @password "pass"
+
+  plug Tesla.Middleware.BasicAuth, username: @username, password: @password
+
+  defmacro hash do
+    Base.encode64("#{@username}:#{@password}")
+  end
+end
