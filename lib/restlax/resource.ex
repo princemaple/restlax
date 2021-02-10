@@ -94,16 +94,31 @@ defmodule Restlax.Resource do
             Enum.zip([@default_actions, @can_be_singular, actions_method]),
           action in actions,
           not singular or can_be_singular do
+        spec = build_spec(singular, action)
         parameters = build_parameters(singular, action)
         args = build_args(singular, action)
 
         quote do
+          @spec unquote(action)(unquote_splicing(spec)) :: Tesla.Env.result()
           def unquote(action)(unquote_splicing(parameters)) do
             client(opts).unquote(method)(unquote_splicing(args))
           end
         end
       end
     }
+  end
+
+  defp build_spec(singular, action) do
+    [
+      if not singular and action in ~w(show update delete)a do
+        quote(do: id :: term())
+      end,
+      if action in ~w(create update)a do
+        quote(do: body :: map() | keyword() | Tesla.Multipart.t())
+      end,
+      quote(do: opts :: [Tesla.option() | {:client, module()}])
+    ]
+    |> Enum.reject(&is_nil/1)
   end
 
   defp build_parameters(singular, action) do
