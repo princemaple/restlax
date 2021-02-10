@@ -7,13 +7,13 @@ defmodule Restlax.Resource do
 
   ### Options
 
-  * `endpoint:` required, string
-  * `singular:` defaults to `false`, boolean
-  * `only:` list of default actions to generate, defaults to `#{inspect(@default_actions)}`
-  * `except:` list of default actions to exclude, defaults to `[]`
-  * `create_method:` HTTP verb to use for `create` action, defaults to `:post`,
+  * `:endpoint` - required, string
+  * `:singular` - defaults to `false`, boolean
+  * `:only` - list of default actions to generate, defaults to `#{inspect(@default_actions)}`
+  * `:except` - list of default actions to exclude, defaults to `[]`
+  * `:create_method` - HTTP verb to use for `create` action, defaults to `:post`,
   sometimes :`put` is used
-  * `update_method:` HTTP verb to use for `update` action, defaults to `:put`,
+  * `:update_method` - HTTP verb to use for `update` action, defaults to `:put`,
   a common alternative is `:patch`
 
   ### Example

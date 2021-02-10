@@ -3,6 +3,16 @@ defmodule Restlax.Client do
 
   ## Rest Client builder
 
+  ### Options
+
+  * `:adapter` - `module()` One of the Tesla Adapters or your own customzied adapter
+  * `:adapter_opts` - `keyword()` options for the adapter
+  * `:logger_opts` - `keyword()` options for `Tesla.Middleware.Logger`
+  * `:base_url` - `String.t()` Base URL, e.g. "https://api.cloudflare.com/client/v4"
+  * `:encoding` - `encoding()` `:json` or `:form_urlencoded`
+  * `:encoding_opts` - `keyword()` options for `Tesla.Middleware.JSON` or `Tesla.Middle.FormUrlencoded`
+  * `:headers` - `[{String.t(), String.t()}]` Default headers, can be overridden per request
+
   ### Example
 
       defmodule MyClient do
@@ -12,14 +22,14 @@ defmodule Restlax.Client do
       end
   """
   @type encoding :: :json | :form_url_encoded
-  @encoding [:json, :form_url_encoded]
 
   @type option ::
           {:adapter, module()}
           | {:adapter_opts, keyword()}
           | {:logger_opts, keyword()}
           | {:base_url, String.t()}
-          | {:encoding, encoding() | {encoding(), keyword()}}
+          | {:encoding, encoding()}
+          | {:encoding_opts, keyword()}
           | {:headers, [{String.t(), String.t()}]}
 
   @spec __using__(opts :: [option()]) :: Macro.t()
@@ -31,14 +41,8 @@ defmodule Restlax.Client do
 
     base_url = Keyword.fetch!(opts, :base_url)
 
-    {encoding, encoding_opts} =
-      case Keyword.get(opts, :encoding, :json) do
-        type when type in @encoding ->
-          {type, []}
-
-        {type, opts} when type in @encoding ->
-          {type, opts}
-      end
+    encoding = Keyword.get(opts, :encoding, :json)
+    encoding_opts = Keyword.get(opts, :encoding_opts, [])
 
     headers = Keyword.get(opts, :headers)
 
@@ -61,6 +65,9 @@ defmodule Restlax.Client do
 
         :form_url_encoded ->
           plug Tesla.Middleware.FormUrlencoded, unquote(encoding_opts)
+
+        unknown ->
+          raise "Unknown encoding: #{inspect(unknown)}"
       end
 
       if unquote(headers) do
