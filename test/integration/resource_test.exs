@@ -108,4 +108,26 @@ defmodule ResourceTest do
               body: %{"headers" => %{"Test-Header" => "testing"}}
             }} = FakeResource.index(client: HttpBinDefaultHeaderClient)
   end
+
+  describe "path_for" do
+    test "resource, passing id" do
+      assert "fake-resource/123" == FakeResource.path_for(123)
+    end
+
+    test "collection, passing nil as id" do
+      assert "fake-resource" == FakeResource.path_for(nil)
+    end
+
+    test "resource action" do
+      assert "fake-resource/123/test" == FakeResource.path_for(123, action: "test")
+    end
+
+    test "collection action" do
+      assert "fake-resource/test" == FakeResource.path_for(nil, action: "test")
+    end
+
+    test "action with param" do
+      assert "fake-resource/test/:param" == FakeResource.path_for(nil, action: "test/:param")
+    end
+  end
 end
