@@ -63,9 +63,26 @@ defmodule Restlax.Resource do
       end
 
       def client(opts \\ []) do
-        {:ok, app} = :application.get_application(__MODULE__)
-        opts[:client] || :persistent_term.get({app, :client})
+        Restlax.Resource.client(__MODULE__, opts)
       end
+    end
+  end
+
+  @doc false
+  def client(module, opts \\ []) do
+    if custom_client = opts[:client] do
+      custom_client
+    else
+      app =
+        case :application.get_application(module) do
+          {:ok, app} ->
+            app
+
+          undefined ->
+            undefined
+        end
+
+      :persistent_term.get({app, :client})
     end
   end
 
