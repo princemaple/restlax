@@ -21,7 +21,7 @@ end
 defmodule HttpBinCustomAdapterClient do
   require HttpBin
 
-  # Adapter configured via config/test.exs
+  # Adapter configured via config/config.exs
   use Restlax.Client, base_url: HttpBin.url("/anything")
 end
 
