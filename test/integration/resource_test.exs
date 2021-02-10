@@ -101,4 +101,11 @@ defmodule ResourceTest do
               }} = FakeSingularResource.update(%{})
     end
   end
+
+  test "dynamically swap client" do
+    assert {:ok,
+            %{
+              body: %{"headers" => %{"Test-Header" => "testing"}}
+            }} = FakeResource.index(client: HttpBinDefaultHeaderClient)
+  end
 end
