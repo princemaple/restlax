@@ -51,8 +51,6 @@ defmodule Restlax.Resource do
     action_functions = build_action_functions(singular, actions, actions_method)
 
     quote do
-      import Restlax
-
       @endpoint unquote(endpoint)
 
       unquote(action_functions)
@@ -62,6 +60,11 @@ defmodule Restlax.Resource do
         |> Enum.reject(&is_nil/1)
         |> Enum.map(&to_string/1)
         |> Path.join()
+      end
+
+      def client(opts \\ []) do
+        {:ok, app} = :application.get_application(__MODULE__)
+        opts[:client] || :persistent_term.get({app, :client})
       end
     end
   end
