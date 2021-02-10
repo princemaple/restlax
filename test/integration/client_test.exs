@@ -13,7 +13,7 @@ defmodule ClientTest do
             }} = HttpBinDefaultAdapterClient.get("/endpoint")
   end
 
-  test "ok with custom adapter configured" do
+  test "ok with custom adapter configured via Application env" do
     import ExUnit.CaptureIO
 
     capture_io("Got it in TestAdapter", fn ->
