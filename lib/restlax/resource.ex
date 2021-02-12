@@ -58,6 +58,7 @@ defmodule Restlax.Resource do
 
       unquote(action_functions)
 
+      @spec path_for(term(), [{:action, String.t()}]) :: String.t()
       def path_for(id, opts \\ []) do
         [@endpoint, id, opts[:action]]
         |> Enum.reject(&is_nil/1)
@@ -65,6 +66,7 @@ defmodule Restlax.Resource do
         |> Path.join()
       end
 
+      @spec client(Restlax.Resource.action_options()) :: module()
       def client(opts \\ []) do
         Restlax.Resource.client(__MODULE__, opts)
       end
