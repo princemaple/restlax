@@ -33,7 +33,7 @@ defmodule Restlax.Resource do
           | {:create_method, :post | :put}
           | {:update_method, :put | :patch}
 
-  @type action_body() :: map() | keyword() | Tesla.Multipart.t()
+  @type action_body() :: map() | keyword() | Tesla.Multipart.t() | binary()
   @type action_options() :: [Tesla.option() | {:client, module()}]
 
   @spec __using__(opts :: [option()]) :: Macro.t()

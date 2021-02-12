@@ -21,7 +21,7 @@ defmodule Restlax.Client do
           adapter: Tesla.Adapter.Mint
       end
   """
-  @type encoding :: :json | :form_url_encoded
+  @type encoding :: :json | :form_url_encoded | :raw
 
   @type option ::
           {:adapter, module()}
@@ -65,6 +65,10 @@ defmodule Restlax.Client do
 
         :form_url_encoded ->
           plug Tesla.Middleware.FormUrlencoded, unquote(encoding_opts)
+
+        :raw ->
+          require Logger
+          Logger.info("No encoding/decoding is configured for #{__MODULE__}")
 
         unknown ->
           raise "Unknown encoding: #{inspect(unknown)}"
