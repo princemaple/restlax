@@ -33,6 +33,8 @@ defmodule Restlax.Resource do
           | {:create_method, :post | :put}
           | {:update_method, :put | :patch}
 
+  @type action_options() :: [Tesla.option() | {:client, module()}]
+
   @spec __using__(opts :: [option()]) :: Macro.t()
   defmacro __using__(opts) do
     endpoint = Keyword.fetch!(opts, :endpoint)
@@ -116,7 +118,7 @@ defmodule Restlax.Resource do
       if action in ~w(create update)a do
         quote(do: body :: map() | keyword() | Tesla.Multipart.t())
       end,
-      quote(do: opts :: [Tesla.option() | {:client, module()}])
+      quote(do: opts :: Restlax.Resource.action_options())
     ]
     |> Enum.reject(&is_nil/1)
   end
