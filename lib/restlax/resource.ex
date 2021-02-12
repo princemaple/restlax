@@ -22,6 +22,56 @@ defmodule Restlax.Resource do
         use Restlax.Resource,
           endpoint: "my-resource"
       end
+
+  ^ This creates
+  - `GET` `MyResource.index(opts)`
+  - `GET` `MyResource.show(id, opts)`
+  - `POST` `MyResource.create(body, opts)`
+  - `PUT` `MyResource.update(id, body, opts)`
+  - `DELETE` `MyResource.delete(id, opts)`
+
+  Change what actions to generate
+
+      defmodule MyResource do
+        use Restlax.Resource,
+          endpoint: "my-resource",
+          only: [:show, :update]
+      end
+
+      defmodule MyResource do
+        use Restlax.Resource,
+          endpoint: "my-resource",
+          except: [:delete]
+      end
+
+
+  Scoped by other resources, `:parent_id` will be interpolated later
+
+      defmodule MyResource do
+        use Restlax.Resource,
+          endpoint: "parent-resource/:parent_id/my-resource"
+      end
+
+  Singular resources only have `:show` and `:update`, and don't have ID in their url
+
+      defmodule MyResource do
+        use Restlax.Resource,
+          endpoint: "my-resource",
+          singular: true
+      end
+
+  ^ This only generates
+  - `GET` `MyResource.show(opts)`
+  - `PUT` `MyResource.update(body, opts)`
+
+  Use `PATCH` for `update` (and use `PUT` for `create` ╮(╯-╰)╭)
+
+      defmodule MyResource do
+        use Restlax.Resource,
+          endpoint: "my-resource",
+          update_method: :patch,
+          create_method: :put
+      end
   """
 
   @type action :: :index | :show | :create | :update | :delete

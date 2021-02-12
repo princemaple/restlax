@@ -18,7 +18,41 @@ defmodule Restlax.Client do
       defmodule MyClient do
         use Restlax.Client,
           base_url: "https://my-awesome.app/api/v1"
-          adapter: Tesla.Adapter.Mint
+          adapter: Tesla.Adapter.Hackney
+      end
+
+  *Note: You may pick an adapter directly like in the above code. However, it's preferred to not pick one
+  if your API client is a library. Leaving it out allows the users of your library to choose one
+  for themselves.*
+
+  For example, if your users already use Mint in their code base, they can use this configuration
+
+      config :tesla, Cloudflare.Client, adapter: Tesla.Adapter.Mint
+
+  to make the Cloudflare API client use the Mint adapter of Tesla and avoid adding another dependency
+
+  ### Customization
+
+  Feel free to add more middlewares like so
+
+
+      defmodule MyApp.Auth do
+        @behaviour Tesla.Middleware
+
+        @impl Tesla.Middleware
+        def call(env, next, _) do
+          auth_token = env.opts[:auth_token] || Application.get_env(:my_app, :auth_token)
+          headers = auth_token && [{"authorization", "Bearer \#{auth_token}"}]) || []
+          Tesla.run(%{env | headers: headers ++ env.headers}, next)
+        end
+      end
+
+      defmodule MyApp.MyClient do
+        use Restlax.Client,
+          base_url: "https://my-awesome.app/api/v1"
+          adapter: Tesla.Adapter.Hackney
+
+        plug MyApp.Auth
       end
   """
   @type encoding :: :json | :form_url_encoded | :raw
