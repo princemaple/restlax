@@ -33,6 +33,7 @@ defmodule Restlax.Resource do
           | {:create_method, :post | :put}
           | {:update_method, :put | :patch}
 
+  @type action_body() :: map() | keyword() | Tesla.Multipart.t()
   @type action_options() :: [Tesla.option() | {:client, module()}]
 
   @spec __using__(opts :: [option()]) :: Macro.t()
@@ -116,7 +117,7 @@ defmodule Restlax.Resource do
         quote(do: id :: term())
       end,
       if action in ~w(create update)a do
-        quote(do: body :: map() | keyword() | Tesla.Multipart.t())
+        quote(do: body :: Restlax.Resource.action_body())
       end,
       quote(do: opts :: Restlax.Resource.action_options())
     ]
