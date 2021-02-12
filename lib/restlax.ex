@@ -1,3 +1,5 @@
 defmodule Restlax do
-  @moduledoc File.read!("#{__DIR__}/../README.md") |> String.replace(~r/^# .+\n/, "")
+  @readme_path "README.md"
+  @external_resource @readme_path
+  @moduledoc File.read!(@readme_path) |> String.replace(~r/^# .+?\n/, "")
 end
