@@ -8,6 +8,10 @@ defmodule ResourceTest do
             %{
               body: %{"method" => "GET", "url" => HttpBin.url("/anything/fake-resource")}
             }} = FakeResource.index()
+
+    assert %{
+             body: %{"method" => "GET", "url" => HttpBin.url("/anything/fake-resource")}
+           } = FakeResource.index!()
   end
 
   test "show" do
@@ -15,6 +19,10 @@ defmodule ResourceTest do
             %{
               body: %{"method" => "GET", "url" => HttpBin.url("/anything/fake-resource/123")}
             }} = FakeResource.show(123)
+
+    assert %{
+             body: %{"method" => "GET", "url" => HttpBin.url("/anything/fake-resource/123")}
+           } = FakeResource.show!(123)
   end
 
   test "create" do
@@ -22,6 +30,10 @@ defmodule ResourceTest do
             %{
               body: %{"method" => "POST", "url" => HttpBin.url("/anything/fake-resource")}
             }} = FakeResource.create(%{})
+
+    assert %{
+             body: %{"method" => "POST", "url" => HttpBin.url("/anything/fake-resource")}
+           } = FakeResource.create!(%{})
   end
 
   test "update" do
@@ -29,6 +41,10 @@ defmodule ResourceTest do
             %{
               body: %{"method" => "PUT", "url" => HttpBin.url("/anything/fake-resource/123")}
             }} = FakeResource.update(123, %{})
+
+    assert %{
+             body: %{"method" => "PUT", "url" => HttpBin.url("/anything/fake-resource/123")}
+           } = FakeResource.update!(123, %{})
   end
 
   test "delete" do
@@ -36,6 +52,10 @@ defmodule ResourceTest do
             %{
               body: %{"method" => "DELETE", "url" => HttpBin.url("/anything/fake-resource/123")}
             }} = FakeResource.delete(123)
+
+    assert %{
+             body: %{"method" => "DELETE", "url" => HttpBin.url("/anything/fake-resource/123")}
+           } = FakeResource.delete!(123)
   end
 
   test "resource action" do
