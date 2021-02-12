@@ -1,4 +1,4 @@
-defmodule ClientTest do
+defmodule Integration.ClientTest do
   use ExUnit.Case, async: true
 
   require HttpBin
@@ -62,11 +62,13 @@ defmodule ClientTest do
 
   test "interpolate path params" do
     assert {:ok, %{url: "http://localhost/anything/endpoint/123"}} =
-             HttpBinClient.post("endpoint/:id", %{}, opts: [path_params: [id: 123]])
+             HttpBinClient.get("endpoint/:id", Restlax.Resource.handle_options(params: [id: 123]))
 
     assert {:ok, %{url: "http://localhost/anything/scope/1/endpoint/123/action/23"}} =
-             HttpBinClient.post("scope/:scope_id/endpoint/:id/action/:action_id", %{},
-               opts: [path_params: [id: 123, scope_id: 1, action_id: 23]]
+             HttpBinClient.post(
+               "scope/:scope_id/endpoint/:id/action/:action_id",
+               %{},
+               Restlax.Resource.handle_options(params: [id: 123, scope_id: 1, action_id: 23])
              )
   end
 

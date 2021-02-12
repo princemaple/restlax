@@ -1,4 +1,4 @@
-defmodule ResourceTest do
+defmodule Integration.ResourceTest do
   use ExUnit.Case, async: true
 
   require HttpBin
@@ -97,7 +97,7 @@ defmodule ResourceTest do
                 "method" => "GET",
                 "url" => HttpBin.url("/anything/scope/123/fake-resource")
               }
-            }} = FakeScopedResource.index(opts: [path_params: [id: 123]])
+            }} = FakeScopedResource.index(params: [id: 123])
   end
 
   describe "singular resource" do

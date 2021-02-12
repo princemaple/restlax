@@ -34,7 +34,7 @@ defmodule Restlax.Resource do
           | {:update_method, :put | :patch}
 
   @type action_body() :: map() | keyword() | Tesla.Multipart.t() | %Stream{} | binary()
-  @type action_options() :: [Tesla.option() | {:client, module()}]
+  @type action_options() :: [Tesla.option() | {:client, module()} | {:params, keyword()}]
 
   @spec __using__(opts :: [option()]) :: Macro.t()
   defmacro __using__(opts) do
@@ -88,6 +88,14 @@ defmodule Restlax.Resource do
         end
 
       :persistent_term.get({app, :client})
+    end
+  end
+
+  @spec handle_options(opts :: Restlax.Resource.action_options()) :: [Tesla.option()]
+  def handle_options(opts) do
+    case opts[:params] do
+      nil -> opts
+      params -> Keyword.update(opts, :opts, [path_params: params], &[{:path_params, params} | &1])
     end
   end
 
@@ -156,7 +164,7 @@ defmodule Restlax.Resource do
       if action in ~w(create update)a do
         quote(do: body)
       end,
-      quote(do: opts)
+      quote(do: Restlax.Resource.handle_options(opts))
     ]
     |> Enum.reject(&is_nil/1)
   end
