@@ -95,23 +95,30 @@ defmodule Restlax.Resource do
     {
       :__block__,
       [],
-      for {action, can_be_singular, method} <-
+      for {action, can_be_singular, http_method} <-
             Enum.zip([@default_actions, @can_be_singular, actions_method]),
+          bang <- [:safe, :bang],
           action in actions,
           not singular or can_be_singular do
+        action_function_name = build_function_name(action, bang)
+        http_method = build_function_name(http_method, bang)
         spec = build_spec(singular, action)
         parameters = build_parameters(singular, action)
         args = build_args(singular, action)
+        return = build_return(bang)
 
         quote do
-          @spec unquote(action)(unquote_splicing(spec)) :: Tesla.Env.result()
-          def unquote(action)(unquote_splicing(parameters)) do
-            client(opts).unquote(method)(unquote_splicing(args))
+          @spec unquote(action_function_name)(unquote_splicing(spec)) :: unquote(return)
+          def(unquote(action_function_name)(unquote_splicing(parameters))) do
+            client(opts).unquote(http_method)(unquote_splicing(args))
           end
         end
       end
     }
   end
+
+  defp build_function_name(action, :safe), do: action
+  defp build_function_name(action, :bang), do: String.to_atom("#{action}!")
 
   defp build_spec(singular, action) do
     [
@@ -152,5 +159,17 @@ defmodule Restlax.Resource do
       quote(do: opts)
     ]
     |> Enum.reject(&is_nil/1)
+  end
+
+  defp build_return(:bang) do
+    quote do
+      Tesla.Env.t() | no_return()
+    end
+  end
+
+  defp build_return(:safe) do
+    quote do
+      Tesla.Env.result()
+    end
   end
 end
