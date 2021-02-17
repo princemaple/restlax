@@ -1,4 +1,7 @@
 # Restlax
+[![hex.pm](https://img.shields.io/hexpm/v/restlax.svg)](https://hex.pm/packages/restlax)
+[![hex.pm](https://img.shields.io/hexpm/l/restlax.svg)](https://hex.pm/packages/restlax)
+[![github.com](https://img.shields.io/github/last-commit/princemaple/restlax.svg)](https://github.com/princemaple/restlax)
 
 > Relax, it's just REST.
 
