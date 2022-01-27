@@ -13,8 +13,10 @@ to pick the HTTP client.
 - quick generation of regular REST actions
 - helpers to aid writing custom actions
 - freedom of choosing your preferred HTTP client
-- (Planned) request validation hook
-- (Planned) response conversion hook
+
+#### Maybe in the future
+- request validation hook
+- response conversion hook
 
 ## Installation
 
