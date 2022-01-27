@@ -14,7 +14,7 @@ to pick the HTTP client.
 - helpers to aid writing custom actions
 - freedom of choosing your preferred HTTP client
 - (Planned) request validation hook
-- (Planned) response convertion hook
+- (Planned) response conversion hook
 
 ## Installation
 
