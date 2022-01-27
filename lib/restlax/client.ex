@@ -5,7 +5,7 @@ defmodule Restlax.Client do
 
   ### Options
 
-  * `:adapter` - `module()` One of the Tesla Adapters or your own customzied adapter
+  * `:adapter` - `module()` One of the Tesla Adapters or your own customized adapter
   * `:adapter_opts` - `keyword()` options for the adapter
   * `:logger_opts` - `keyword()` options for `Tesla.Middleware.Logger`
   * `:base_url` - `String.t()` Base URL, e.g. "https://api.cloudflare.com/client/v4"
