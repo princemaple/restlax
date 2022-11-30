@@ -29,7 +29,7 @@ defmodule Restlax.MixProject do
   defp deps do
     [
       {:tesla, "~> 1.0"},
-      {:finch, "~> 0.13", optional: true},
+      {:finch, "~> 0.14", optional: true},
       {:mint, "~> 1.0", optional: true},
       {:hackney, "~> 1.0", optional: true},
       {:gun, "~> 1.0", optional: true},
