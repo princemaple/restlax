@@ -32,7 +32,7 @@ defmodule Restlax.MixProject do
       {:finch, "~> 0.14", optional: true},
       {:mint, "~> 1.0", optional: true},
       {:hackney, "~> 1.0", optional: true},
-      {:gun, "~> 1.0", optional: true},
+      {:gun, "~> 2.0", optional: true},
       {:jason, "~> 1.0", optional: true},
       {:plug, "~> 1.0", optional: true},
       {:ex_doc, ">= 0.0.0", only: :docs}
