@@ -28,13 +28,8 @@ defmodule Restlax.MixProject do
 
   defp deps do
     [
-      {:tesla, "~> 1.0"},
-      {:finch, "~> 0.16", optional: true},
-      {:mint, "~> 1.0", optional: true},
-      {:hackney, "~> 1.0", optional: true},
-      {:gun, "~> 1.0", optional: true},
-      {:jason, "~> 1.0", optional: true},
-      {:plug, "~> 1.0", optional: true},
+      {:req, "~> 0.5"},
+      {:jason, "~> 1.0"},
       {:ex_doc, ">= 0.0.0", only: :docs}
     ]
   end
