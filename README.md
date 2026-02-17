@@ -5,7 +5,7 @@
 
 > Relax, it's just REST.
 
-Built on top of [Tesla](https://github.com/teamon/tesla) and allows you and the users your API client
+Built on top of [Req](https://github.com/wojtekmach/req) and allows you and the users your API client
 to pick the HTTP client.
 
 ## Features

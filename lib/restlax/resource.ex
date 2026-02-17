@@ -83,8 +83,8 @@ defmodule Restlax.Resource do
           | {:create_method, :post | :put}
           | {:update_method, :put | :patch}
 
-  @type action_body() :: map() | keyword() | Tesla.Multipart.t() | %Stream{} | binary()
-  @type action_options() :: [Tesla.option() | {:client, module()} | {:params, keyword()}]
+  @type action_body() :: map() | keyword() | %Stream{} | binary()
+  @type action_options() :: [keyword() | {:client, module()} | {:params, keyword()}]
 
   @spec __using__(opts :: [option()]) :: Macro.t()
   defmacro __using__(opts) do
@@ -141,7 +141,7 @@ defmodule Restlax.Resource do
     end
   end
 
-  @spec handle_options(opts :: Restlax.Resource.action_options()) :: [Tesla.option()]
+  @spec handle_options(opts :: Restlax.Resource.action_options()) :: keyword()
   def handle_options(opts) do
     case opts[:params] do
       nil -> opts
@@ -221,13 +221,13 @@ defmodule Restlax.Resource do
 
   defp build_return(:bang) do
     quote do
-      Tesla.Env.t() | no_return()
+      map() | no_return()
     end
   end
 
   defp build_return(:safe) do
     quote do
-      Tesla.Env.result()
+      {:ok, map()} | {:error, term()}
     end
   end
 end
