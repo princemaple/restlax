@@ -1,9 +1,9 @@
 defmodule TestAdapter do
-  @behaviour Tesla.Adapter
+  @behaviour Restlax.Client
 
-  @impl Tesla.Adapter
-  def call(env, _opts) do
+  @impl Restlax.Client
+  def call(_request) do
     IO.puts("Got it in TestAdapter")
-    {:ok, %{env | status: 200}}
+    {:ok, %{status: 200}}
   end
 end
