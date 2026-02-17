@@ -85,8 +85,6 @@ defmodule Restlax.Client do
     options =
       [method: method, url: url, headers: headers]
       |> with_body(body, encoding)
-      # Disable Req auto-decoding so we can use Elixir JSON (or optional Jason fallback) consistently.
-      |> Keyword.put_new(:decode_body, false)
       |> Keyword.merge(req_options)
 
     case Req.request(options) do
@@ -95,7 +93,7 @@ defmodule Restlax.Client do
          %{
            status: response.status,
            headers: response.headers,
-           body: decode_json_body(response.body, response.headers),
+           body: response.body,
            url: Map.get(response, :url, url)
          }}
 
@@ -105,14 +103,7 @@ defmodule Restlax.Client do
   end
 
   defp with_body(options, nil, _encoding), do: options
-  defp with_body(options, body, :json) do
-    options
-    |> Keyword.put(:body, encode_json!(body))
-    |> Keyword.update(:headers, [{"content-type", "application/json"}], fn headers ->
-      [{"content-type", "application/json"} | headers]
-    end)
-  end
-
+  defp with_body(options, body, :json), do: Keyword.put(options, :json, body)
   defp with_body(options, body, :form_url_encoded), do: Keyword.put(options, :form, body)
   defp with_body(options, body, _encoding), do: Keyword.put(options, :body, body)
 
@@ -149,48 +140,4 @@ defmodule Restlax.Client do
     |> Map.values()
   end
 
-  defp decode_json_body(body, headers) when is_binary(body) do
-    if json_content_type?(headers) do
-      case decode_json(body) do
-        {:ok, decoded} -> decoded
-        _ -> body
-      end
-    else
-      body
-    end
-  end
-
-  defp decode_json_body(body, _headers), do: body
-
-  defp json_content_type?(headers) do
-    Enum.any?(headers, fn {k, v} ->
-      String.downcase(to_string(k)) == "content-type" && String.contains?(to_string(v), "application/json")
-    end)
-  end
-
-  defp encode_json!(data) do
-    cond do
-      Code.ensure_loaded?(JSON) and function_exported?(JSON, :encode!, 1) ->
-        JSON.encode!(data)
-
-      Code.ensure_loaded?(Jason) and function_exported?(Jason, :encode!, 1) ->
-        Jason.encode!(data)
-
-      true ->
-        raise "JSON encoder not available. Add :jason dependency or use Elixir JSON module."
-    end
-  end
-
-  defp decode_json(data) do
-    cond do
-      Code.ensure_loaded?(JSON) and function_exported?(JSON, :decode, 1) ->
-        JSON.decode(data)
-
-      Code.ensure_loaded?(Jason) and function_exported?(Jason, :decode, 1) ->
-        Jason.decode(data)
-
-      true ->
-        {:error, :json_decoder_not_available}
-    end
-  end
 end

@@ -29,7 +29,6 @@ defmodule Restlax.MixProject do
   defp deps do
     [
       {:req, "~> 0.4.0 and < 0.4.10"},
-      {:jason, "~> 1.0", optional: true},
       {:ex_doc, ">= 0.0.0", only: :docs}
     ]
   end
