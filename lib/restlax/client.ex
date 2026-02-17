@@ -85,6 +85,7 @@ defmodule Restlax.Client do
     options =
       [method: method, url: url, headers: headers]
       |> with_body(body, encoding)
+      # Disable Req auto-decoding so we can use Elixir JSON (or optional Jason fallback) consistently.
       |> Keyword.put_new(:decode_body, false)
       |> Keyword.merge(req_options)
 
