@@ -98,4 +98,41 @@ defmodule Integration.ClientTest do
              }
            } = HttpBinClient.get!("/endpoint")
   end
+
+  test "remaining bang wrappers return response directly" do
+    assert %{body: %{"method" => "POST"}} = HttpBinClient.post!("/endpoint", %{x: 1})
+    assert %{body: %{"method" => "PUT"}} = HttpBinClient.put!("/endpoint", %{x: 1})
+    assert %{body: %{"method" => "PATCH"}} = HttpBinClient.patch!("/endpoint", %{x: 1})
+    assert %{body: %{"method" => "DELETE"}} = HttpBinClient.delete!("/endpoint")
+    assert %{body: "", headers: %{"x-http-method" => ["HEAD"]}} = HttpBinClient.head!("/endpoint")
+  end
+
+  test "bang request raises for transport errors" do
+    assert_raise Mint.TransportError, fn ->
+      HttpBinUnavailableClient.get!("/endpoint")
+    end
+  end
+
+  test "form_url_encoded body" do
+    assert {:ok, %{body: %{"raw_body" => "x=1&y=2"}}} =
+             HttpBinFormClient.post("/endpoint", x: 1, y: 2)
+  end
+
+  test "raw body" do
+    assert {:ok, %{body: %{"raw_body" => "hello world"}}} =
+             HttpBinRawClient.post("/endpoint", "hello world")
+  end
+
+  test "request options merge with client defaults and req_options headers" do
+    assert {:ok,
+            %{
+              body: %{
+                "headers" => %{
+                  "From-Req" => "yes",
+                  "Test-Header" => "from-request"
+                }
+              }
+            }} =
+             HttpBinReqOptionsClient.get("/endpoint", headers: [{"test-header", "from-request"}])
+  end
 end
