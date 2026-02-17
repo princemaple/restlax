@@ -128,16 +128,15 @@ defmodule Restlax.Resource do
     if custom_client = opts[:client] do
       custom_client
     else
-      app =
-        case :application.get_application(module) do
-          {:ok, app} ->
-            app
+      app = app(module)
+      Application.get_env(app, :client) || :persistent_term.get({app, :client})
+    end
+  end
 
-          undefined ->
-            undefined
-        end
-
-      :persistent_term.get({app, :client})
+  defp app(module) do
+    case :application.get_application(module) do
+      {:ok, app} -> app
+      _ -> :restlax
     end
   end
 
