@@ -27,6 +27,7 @@ Bypass.expect(http_bin_bypass, fn conn ->
     |> Map.new()
 
   conn
+  |> Plug.Conn.put_resp_header("x-http-method", conn.method)
   |> Plug.Conn.put_resp_content_type("application/json")
   |> Plug.Conn.send_resp(200, Jason.encode!(response))
 end)

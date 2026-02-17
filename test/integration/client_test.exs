@@ -53,7 +53,8 @@ defmodule Integration.ClientTest do
   end
 
   test "head request" do
-    assert {:ok, %{body: ""}} = HttpBinClient.head("endpoint")
+    assert {:ok, %{body: "", headers: %{"x-http-method" => ["HEAD"]}}} =
+             HttpBinClient.head("endpoint")
   end
 
   test "send headers" do
