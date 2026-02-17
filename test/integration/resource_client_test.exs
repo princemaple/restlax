@@ -3,7 +3,8 @@ defmodule ResourceClientTest do
 
   setup do
     on_exit(fn ->
-      :persistent_term.put({:undefined, :client}, HttpBinClient)
+      Application.put_env(:restlax, :client, HttpBinClient)
+      :persistent_term.erase({:restlax, :client})
     end)
   end
 
@@ -11,13 +12,20 @@ defmodule ResourceClientTest do
     assert FakeResource.client(client: MyClient) == MyClient
   end
 
-  test "option overrides persistent_term" do
-    :persistent_term.put({:undefined, :client}, NotMyClient)
+  test "option overrides application client" do
+    Application.put_env(:restlax, :client, NotMyClient)
     assert FakeResource.client(client: MyClient) == MyClient
   end
 
-  test "get client persistent_term" do
-    :persistent_term.put({:undefined, :client}, SomeClient)
+  test "get client from application config" do
+    Application.put_env(:restlax, :client, SomeClient)
+    assert FakeResource.client([]) == SomeClient
+  end
+
+  test "fallback to persistent_term" do
+    Application.delete_env(:restlax, :client)
+    :persistent_term.put({:restlax, :client}, SomeClient)
+
     assert FakeResource.client([]) == SomeClient
   end
 end
