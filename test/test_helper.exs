@@ -32,6 +32,6 @@ Bypass.expect(http_bin_bypass, fn conn ->
   |> Plug.Conn.send_resp(200, Jason.encode!(response))
 end)
 
-Application.put_env(:restlax, :client, HttpBinClient)
+Application.put_env(:undefined, :client, HttpBinClient)
 
 ExUnit.start()

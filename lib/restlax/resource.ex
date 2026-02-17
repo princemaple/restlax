@@ -136,7 +136,7 @@ defmodule Restlax.Resource do
   defp app(module) do
     case :application.get_application(module) do
       {:ok, app} -> app
-      _ -> :restlax
+      :undefined -> :undefined
     end
   end
 
