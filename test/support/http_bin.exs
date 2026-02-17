@@ -4,6 +4,14 @@ defmodule HttpBin do
   end
 end
 
+defmodule Restlax.TestSupport.HttpBin do
+  def format_header(header) do
+    header
+    |> String.split("-")
+    |> Enum.map_join("-", &String.capitalize/1)
+  end
+end
+
 defmodule HttpBinClient do
   require HttpBin
 

@@ -42,6 +42,20 @@ defmodule Integration.ClientTest do
             }} = HttpBinClient.post("endpoint", %{test: %{data: ~w(a b c), count: 123}})
   end
 
+  test "patch json" do
+    assert {:ok,
+            %{
+              body: %{
+                "method" => "PATCH",
+                "json" => %{"test" => %{"count" => 123}}
+              }
+            }} = HttpBinClient.patch("endpoint", %{test: %{count: 123}})
+  end
+
+  test "head request" do
+    assert {:ok, %{body: ""}} = HttpBinClient.head("endpoint")
+  end
+
   test "send headers" do
     assert {:ok, %{body: %{"headers" => %{"Test-Header" => "testing"}}}} =
              HttpBinClient.post("endpoint", %{}, headers: [{"test-header", "testing"}])
@@ -53,10 +67,10 @@ defmodule Integration.ClientTest do
   end
 
   test "interpolate path params" do
-    assert {:ok, %{url: "http://localhost/anything/endpoint/123"}} =
+    assert {:ok, %{url: HttpBin.url("/anything/endpoint/123")}} =
              HttpBinClient.get("endpoint/:id", Restlax.Resource.handle_options(params: [id: 123]))
 
-    assert {:ok, %{url: "http://localhost/anything/scope/1/endpoint/123/action/23"}} =
+    assert {:ok, %{url: HttpBin.url("/anything/scope/1/endpoint/123/action/23")}} =
              HttpBinClient.post(
                "scope/:scope_id/endpoint/:id/action/:action_id",
                %{},
@@ -73,5 +87,14 @@ defmodule Integration.ClientTest do
                 }
               }
             }} = HttpBinBasicAuthClient.get("/endpoint")
+  end
+
+  test "bang request returns response directly" do
+    assert %{
+             body: %{
+               "method" => "GET",
+               "url" => HttpBin.url("/anything/endpoint")
+             }
+           } = HttpBinClient.get!("/endpoint")
   end
 end
