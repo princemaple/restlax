@@ -40,3 +40,36 @@ defmodule HttpBinBasicAuthClient do
     base_url: HttpBin.url("/anything"),
     headers: [{"authorization", "Basic dGVzdDpwYXNz"}]
 end
+
+defmodule HttpBinFormClient do
+  require HttpBin
+
+  use Restlax.Client,
+    base_url: HttpBin.url("/anything"),
+    encoding: :form_url_encoded
+end
+
+defmodule HttpBinRawClient do
+  require HttpBin
+
+  use Restlax.Client,
+    base_url: HttpBin.url("/anything"),
+    encoding: :raw
+end
+
+defmodule HttpBinReqOptionsClient do
+  require HttpBin
+
+  use Restlax.Client,
+    base_url: HttpBin.url("/anything"),
+    headers: [{"test-header", "from-default"}],
+    req_options: [
+      headers: [{"from-req", "yes"}, {"test-header", "from-req"}],
+      receive_timeout: 30_000
+    ]
+end
+
+defmodule HttpBinUnavailableClient do
+  use Restlax.Client,
+    base_url: "http://localhost:1/anything"
+end

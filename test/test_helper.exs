@@ -14,14 +14,24 @@ Bypass.expect(http_bin_bypass, fn conn ->
     end)
 
   {:ok, body, conn} = Plug.Conn.read_body(conn)
-  json = if body == "", do: nil, else: Jason.decode!(body)
+
+  {json, raw_body} =
+    if body == "" do
+      {nil, nil}
+    else
+      case Jason.decode(body) do
+        {:ok, json} -> {json, nil}
+        _ -> {nil, body}
+      end
+    end
 
   response =
     %{
       method: conn.method,
       url: "http://localhost:#{http_bin_bypass.port}#{conn.request_path}",
       headers: headers,
-      json: json
+      json: json,
+      raw_body: raw_body
     }
     |> Enum.reject(fn {_k, v} -> is_nil(v) end)
     |> Map.new()
