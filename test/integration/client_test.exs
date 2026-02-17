@@ -13,14 +13,6 @@ defmodule Integration.ClientTest do
             }} = HttpBinDefaultAdapterClient.get("/endpoint")
   end
 
-  test "ok with custom adapter configured via Application env" do
-    import ExUnit.CaptureIO
-
-    capture_io("Got it in TestAdapter", fn ->
-      assert {:ok, _} = HttpBinCustomAdapterClient.get("/endpoint")
-    end)
-  end
-
   test "with leading slash" do
     assert {:ok,
             %{
@@ -72,14 +64,12 @@ defmodule Integration.ClientTest do
              )
   end
 
-  test "additional middleware" do
-    require HttpBinBasicAuthClient
-
+  test "default auth header" do
     assert {:ok,
             %{
               body: %{
                 "headers" => %{
-                  "Authorization" => "Basic #{HttpBinBasicAuthClient.hash()}"
+                  "Authorization" => "Basic dGVzdDpwYXNz"
                 }
               }
             }} = HttpBinBasicAuthClient.get("/endpoint")

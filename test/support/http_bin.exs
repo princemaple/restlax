@@ -17,13 +17,6 @@ defmodule HttpBinDefaultAdapterClient do
   use Restlax.Client, base_url: HttpBin.url("/anything")
 end
 
-defmodule HttpBinCustomAdapterClient do
-  require HttpBin
-
-  # Adapter configured via config/config.exs
-  use Restlax.Client, base_url: HttpBin.url("/anything")
-end
-
 defmodule HttpBinDefaultHeaderClient do
   require HttpBin
 
@@ -35,14 +28,7 @@ end
 defmodule HttpBinBasicAuthClient do
   require HttpBin
 
-  use Restlax.Client, base_url: HttpBin.url("/anything")
-
-  @username "test"
-  @password "pass"
-
-  plug Restlax.Client.BasicAuth, username: @username, password: @password
-
-  defmacro hash do
-    Base.encode64("#{@username}:#{@password}")
-  end
+  use Restlax.Client,
+    base_url: HttpBin.url("/anything"),
+    headers: [{"authorization", "Basic dGVzdDpwYXNz"}]
 end

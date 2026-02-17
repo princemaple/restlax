@@ -1,7 +1,7 @@
 defmodule Restlax.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "1.0.0"
   @source_url "https://github.com/princemaple/restlax"
 
   def project do
@@ -28,13 +28,8 @@ defmodule Restlax.MixProject do
 
   defp deps do
     [
-      {:req, "~> 0.5"},
-      {:finch, "~> 0.16", optional: true},
-      {:mint, "~> 1.0", optional: true},
-      {:hackney, "~> 1.0", optional: true},
-      {:gun, "~> 1.0", optional: true},
+      {:req, "~> 0.4.0 and < 0.4.10"},
       {:jason, "~> 1.0", optional: true},
-      {:plug, "~> 1.0", optional: true},
       {:ex_doc, ">= 0.0.0", only: :docs}
     ]
   end
