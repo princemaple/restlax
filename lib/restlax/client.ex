@@ -106,7 +106,8 @@ defmodule Restlax.Client do
     result =
       case adapter(module, config) do
         nil -> req_request(request, config.encoding)
-        adapter_module -> adapter_module.call(%{request | options: [adapter_opts: config.adapter_opts | opts]})
+        adapter_module ->
+          adapter_module.call(%{request | options: Keyword.put(opts, :adapter_opts, config.adapter_opts)})
       end
 
     case {bang, result} do
@@ -123,7 +124,7 @@ defmodule Restlax.Client do
 
     case Req.request(options) do
       {:ok, response} ->
-        {:ok, %{status: response.status, headers: response.headers, body: response.body, url: request.url}}
+        {:ok, %{status: response.status, headers: response.headers, body: response.body, url: Map.get(response, :url, request.url)}}
 
       {:error, error} ->
         {:error, error}
