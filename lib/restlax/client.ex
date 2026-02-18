@@ -131,11 +131,6 @@ defmodule Restlax.Client do
   end
 
   defp build_url(base_url, path) do
-    path =
-      path
-      |> to_string()
-      |> String.trim_leading("/")
-
     base_url
     |> URI.parse()
     |> Map.update!(:path, &Path.join(&1 || "/", path))
