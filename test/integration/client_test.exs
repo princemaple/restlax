@@ -36,7 +36,8 @@ defmodule Integration.ClientTest do
   test "absolute url bypasses client base_url" do
     absolute_url = HttpBin.url("/anything/endpoint")
 
-    assert {:ok, %{body: %{"url" => ^absolute_url}, url: ^absolute_url}} = HttpBinClient.get(absolute_url)
+    assert {:ok, response} = HttpBinClient.get(absolute_url)
+    assert %{body: %{"url" => ^absolute_url}, url: ^absolute_url} = response
   end
 
   test "post json" do
