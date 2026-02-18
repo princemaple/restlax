@@ -13,9 +13,6 @@ Built on top of [Req](https://github.com/wojtekmach/req) for a consistent HTTP t
 - helpers to aid writing custom actions
 - request-level customization via `req/1` callback
 
-#### Maybe in the future
-- response conversion hook
-
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
