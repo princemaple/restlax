@@ -21,7 +21,7 @@ by adding `restlax` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:restlax, "~> 1.0.0"}
+    {:restlax, "~> 1.0.1"}
   ]
 end
 ```
