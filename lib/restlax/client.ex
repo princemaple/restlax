@@ -136,7 +136,10 @@ defmodule Restlax.Client do
       |> to_string()
       |> String.trim_leading("/")
 
-    "#{String.trim_trailing(base_url, "/")}/#{path}"
+    base_url
+    |> URI.parse()
+    |> Map.update!(:path, &Path.join(&1 || "/", path))
+    |> URI.to_string()
   end
 
   defp format_url(%URI{} = url), do: URI.to_string(url)
