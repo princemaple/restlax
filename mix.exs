@@ -8,7 +8,7 @@ defmodule Restlax.MixProject do
     [
       app: :restlax,
       version: @version,
-      elixir: "~> 1.11",
+      elixir: "~> 1.16",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
 
