@@ -69,6 +69,17 @@ defmodule HttpBinReqOptionsClient do
     ]
 end
 
+defmodule HttpBinCallbackClient do
+  require HttpBin
+
+  use Restlax.Client,
+    base_url: HttpBin.url("/anything")
+
+  def req(request) do
+    Req.Request.put_header(request, "x-test-header", "from-callback")
+  end
+end
+
 defmodule HttpBinUnavailableClient do
   use Restlax.Client,
     base_url: "http://localhost:1/anything"

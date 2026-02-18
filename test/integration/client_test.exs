@@ -135,4 +135,9 @@ defmodule Integration.ClientTest do
             }} =
              HttpBinReqOptionsClient.get("/endpoint", headers: [{"test-header", "from-request"}])
   end
+
+  test "request callback can update req request" do
+    assert {:ok, %{body: %{"headers" => %{"X-Test-Header" => "from-callback"}}}} =
+             HttpBinCallbackClient.get("/endpoint")
+  end
 end
