@@ -79,7 +79,7 @@ defmodule Restlax.Client do
     request = req_request(method, url, headers, body, config.encoding, req_options, path_params)
     request = module.req(request)
 
-    result = send_request(request)
+    result = send_request(request, url)
 
     case {bang, result} do
       {false, _} -> result
@@ -99,7 +99,7 @@ defmodule Restlax.Client do
     |> Req.Steps.put_path_params()
   end
 
-  defp send_request(request) do
+  defp send_request(request, fallback_url) do
     case Req.request(request) do
       {:ok, response} ->
         {:ok,
@@ -107,7 +107,7 @@ defmodule Restlax.Client do
            status: response.status,
            headers: response.headers,
            body: response.body,
-           url: format_url(request.url)
+           url: format_url(request.url || Map.get(response, :url) || fallback_url)
          }}
 
       {:error, error} ->
