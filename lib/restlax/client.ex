@@ -54,6 +54,10 @@ defmodule Restlax.Client do
       def patch(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, false)
       def patch!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, true)
 
+      def req(request), do: request
+
+      defoverridable req: 1
+
       def __restlax_config__ do
         %{
           base_url: @restlax_base_url,
@@ -68,11 +72,14 @@ defmodule Restlax.Client do
   @spec request(module(), atom(), String.t(), term(), keyword(), boolean()) :: {:ok, map()} | map() | no_return()
   def request(module, method, path, body, opts, bang) do
     config = module.__restlax_config__()
-    url = build_url(config.base_url, path, path_params(opts))
+    path_params = path_params(opts)
+    url = build_url(config.base_url, path)
     headers = merge_headers(config.headers, Keyword.get(config.req_options, :headers, []) ++ Keyword.get(opts, :headers, []))
     req_options = req_options(config.req_options, opts)
+    request = req_request(method, url, headers, body, config.encoding, req_options, path_params)
+    request = module.req(request)
 
-    result = req_request(method, url, headers, body, config.encoding, req_options)
+    result = send_request(request, url)
 
     case {bang, result} do
       {false, _} -> result
@@ -81,20 +88,26 @@ defmodule Restlax.Client do
     end
   end
 
-  defp req_request(method, url, headers, body, encoding, req_options) do
+  defp req_request(method, url, headers, body, encoding, req_options, path_params) do
     options =
-      [method: method, url: url, headers: headers]
+      [method: method, url: url, headers: headers, path_params: path_params]
       |> with_body(body, encoding)
       |> Keyword.merge(req_options)
 
-    case Req.request(options) do
+    options
+    |> Req.new()
+    |> Req.Steps.put_path_params()
+  end
+
+  defp send_request(request, fallback_url) do
+    case Req.request(request) do
       {:ok, response} ->
         {:ok,
          %{
            status: response.status,
            headers: response.headers,
            body: response.body,
-           url: Map.get(response, :url, url)
+           url: format_url(request.url || Map.get(response, :url) || fallback_url)
          }}
 
       {:error, error} ->
@@ -117,21 +130,15 @@ defmodule Restlax.Client do
     Keyword.merge(client_req_options, request_req_options)
   end
 
-  defp build_url(base_url, path, path_params) do
-    path =
-      path
-      |> to_string()
-      |> interpolate(path_params)
-      |> String.trim_leading("/")
-
-    "#{String.trim_trailing(base_url, "/")}/#{path}"
+  defp build_url(base_url, path) do
+    base_url
+    |> URI.parse()
+    |> Map.update!(:path, &Path.join(&1 || "/", path))
+    |> URI.to_string()
   end
 
-  defp interpolate(path, path_params) do
-    Enum.reduce(path_params, path, fn {k, v}, acc ->
-      String.replace(acc, ":#{k}", to_string(v))
-    end)
-  end
+  defp format_url(%URI{} = url), do: URI.to_string(url)
+  defp format_url(url), do: url
 
   defp merge_headers(default_headers, headers) do
     default_headers
