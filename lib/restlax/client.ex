@@ -41,18 +41,41 @@ defmodule Restlax.Client do
       @restlax_headers unquote(headers)
       @restlax_req_options unquote(req_options)
 
-      def get(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, false)
-      def get!(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, true)
-      def delete(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, false)
-      def delete!(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, true)
-      def head(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, false)
-      def head!(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, true)
-      def post(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :post, path, body, opts, false)
-      def post!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :post, path, body, opts, true)
-      def put(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :put, path, body, opts, false)
-      def put!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :put, path, body, opts, true)
-      def patch(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, false)
-      def patch!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, true)
+      def get(path, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, false)
+
+      def get!(path, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, true)
+
+      def delete(path, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, false)
+
+      def delete!(path, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, true)
+
+      def head(path, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, false)
+
+      def head!(path, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, true)
+
+      def post(path, body, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :post, path, body, opts, false)
+
+      def post!(path, body, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :post, path, body, opts, true)
+
+      def put(path, body, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :put, path, body, opts, false)
+
+      def put!(path, body, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :put, path, body, opts, true)
+
+      def patch(path, body, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, false)
+
+      def patch!(path, body, opts \\ []),
+        do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, true)
 
       def req(request), do: request
 
@@ -69,17 +92,36 @@ defmodule Restlax.Client do
     end
   end
 
-  @spec request(module(), atom(), String.t(), term(), keyword(), boolean()) :: {:ok, map()} | map() | no_return()
+  @spec request(module(), atom(), String.t(), term(), keyword(), boolean()) ::
+          {:ok, map()} | map() | no_return()
   def request(module, method, path, body, opts, bang) do
     config = module.__restlax_config__()
     path_params = path_params(opts)
-    url = build_url(config.base_url, path)
-    headers = merge_headers(config.headers, Keyword.get(config.req_options, :headers, []) ++ Keyword.get(opts, :headers, []))
+    url = path
+
+    headers =
+      merge_headers(
+        config.headers,
+        Keyword.get(config.req_options, :headers, []) ++ Keyword.get(opts, :headers, [])
+      )
+
     req_options = req_options(config.req_options, opts)
-    request = req_request(method, url, headers, body, config.encoding, req_options, path_params)
+
+    request =
+      req_request(
+        method,
+        url,
+        config.base_url,
+        headers,
+        body,
+        config.encoding,
+        req_options,
+        path_params
+      )
+
     request = module.req(request)
 
-    result = send_request(request, url)
+    result = send_request(request)
 
     case {bang, result} do
       {false, _} -> result
@@ -88,9 +130,9 @@ defmodule Restlax.Client do
     end
   end
 
-  defp req_request(method, url, headers, body, encoding, req_options, path_params) do
+  defp req_request(method, url, base_url, headers, body, encoding, req_options, path_params) do
     options =
-      [method: method, url: url, headers: headers, path_params: path_params]
+      [method: method, url: url, base_url: base_url, headers: headers, path_params: path_params]
       |> with_body(body, encoding)
       |> Keyword.merge(req_options)
 
@@ -99,18 +141,18 @@ defmodule Restlax.Client do
     |> Req.Steps.put_path_params()
   end
 
-  defp send_request(request, fallback_url) do
-    case Req.request(request) do
-      {:ok, response} ->
+  defp send_request(request) do
+    case Req.Request.run_request(request) do
+      {request, %Req.Response{} = response} ->
         {:ok,
          %{
            status: response.status,
            headers: response.headers,
            body: response.body,
-           url: format_url(request.url || Map.get(response, :url) || fallback_url)
+           url: format_url(request.url)
          }}
 
-      {:error, error} ->
+      {_request, error} ->
         {:error, error}
     end
   end
@@ -130,13 +172,6 @@ defmodule Restlax.Client do
     Keyword.merge(client_req_options, request_req_options)
   end
 
-  defp build_url(base_url, path) do
-    base_url
-    |> URI.parse()
-    |> Map.update!(:path, &Path.join(&1 || "/", path))
-    |> URI.to_string()
-  end
-
   defp format_url(%URI{} = url), do: URI.to_string(url)
   defp format_url(url), do: url
 
@@ -146,5 +181,4 @@ defmodule Restlax.Client do
     |> Enum.reduce(%{}, fn {k, v}, acc -> Map.put(acc, String.downcase(k), {k, v}) end)
     |> Map.values()
   end
-
 end
