@@ -1,7 +1,7 @@
 ## [1.0.1] - 2026-02-18
 
-### Changed
-- No functional changes; release metadata update.
+### PR subjects since 1.0.0
+- Prepare 1.0.1 release metadata.
 
 ## [1.0.0] - 2026-02-17
 
