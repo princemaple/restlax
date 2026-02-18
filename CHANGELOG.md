@@ -1,7 +1,7 @@
 ## [1.0.1] - 2026-02-18
 
 ### Changed
-- PR subject since 1.0.0: Prepare 1.0.1 release metadata.
+- Delegate client URL composition to Req
 
 ## [1.0.0] - 2026-02-17
 
