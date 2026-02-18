@@ -1,7 +1,7 @@
 ## [1.0.1] - 2026-02-18
 
-### PR subjects since 1.0.0
-- Prepare 1.0.1 release metadata.
+### Changed
+- PR subject since 1.0.0: Prepare 1.0.1 release metadata.
 
 ## [1.0.0] - 2026-02-17
 
