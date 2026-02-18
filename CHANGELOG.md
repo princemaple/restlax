@@ -1,7 +1,7 @@
 ## [1.0.1] - 2026-02-18
 
 ### Changed
-- Prepare 1.0.1 release.
+- No functional changes; release metadata update.
 
 ## [1.0.0] - 2026-02-17
 
