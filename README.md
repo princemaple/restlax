@@ -5,17 +5,15 @@
 
 > Relax, it's just REST.
 
-Built on top of [Req](https://github.com/wojtekmach/req) and allows you and the users your API client
-to pick the HTTP client.
+Built on top of [Req](https://github.com/wojtekmach/req) for a consistent HTTP transport.
 
 ## Features
 
 - quick generation of regular REST actions
 - helpers to aid writing custom actions
-- freedom of choosing your preferred HTTP client
+- request-level customization via `req/1` callback
 
 #### Maybe in the future
-- request validation hook
 - response conversion hook
 
 ## Installation
@@ -26,7 +24,7 @@ by adding `restlax` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:restlax, "~> 0.1.0"}
+    {:restlax, "~> 1.0.0"}
   ]
 end
 ```
