@@ -41,41 +41,18 @@ defmodule Restlax.Client do
       @restlax_headers unquote(headers)
       @restlax_req_options unquote(req_options)
 
-      def get(path, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, false)
-
-      def get!(path, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, true)
-
-      def delete(path, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, false)
-
-      def delete!(path, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, true)
-
-      def head(path, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, false)
-
-      def head!(path, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, true)
-
-      def post(path, body, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :post, path, body, opts, false)
-
-      def post!(path, body, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :post, path, body, opts, true)
-
-      def put(path, body, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :put, path, body, opts, false)
-
-      def put!(path, body, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :put, path, body, opts, true)
-
-      def patch(path, body, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, false)
-
-      def patch!(path, body, opts \\ []),
-        do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, true)
+      def get(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, false)
+      def get!(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :get, path, nil, opts, true)
+      def delete(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, false)
+      def delete!(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :delete, path, nil, opts, true)
+      def head(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, false)
+      def head!(path, opts \\ []), do: Restlax.Client.request(__MODULE__, :head, path, nil, opts, true)
+      def post(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :post, path, body, opts, false)
+      def post!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :post, path, body, opts, true)
+      def put(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :put, path, body, opts, false)
+      def put!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :put, path, body, opts, true)
+      def patch(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, false)
+      def patch!(path, body, opts \\ []), do: Restlax.Client.request(__MODULE__, :patch, path, body, opts, true)
 
       def req(request), do: request
 
@@ -92,33 +69,15 @@ defmodule Restlax.Client do
     end
   end
 
-  @spec request(module(), atom(), String.t(), term(), keyword(), boolean()) ::
-          {:ok, map()} | map() | no_return()
+  @spec request(module(), atom(), String.t(), term(), keyword(), boolean()) :: {:ok, map()} | map() | no_return()
   def request(module, method, path, body, opts, bang) do
     config = module.__restlax_config__()
     path_params = path_params(opts)
     url = path
 
-    headers =
-      merge_headers(
-        config.headers,
-        Keyword.get(config.req_options, :headers, []) ++ Keyword.get(opts, :headers, [])
-      )
-
+    headers = merge_headers(config.headers, Keyword.get(config.req_options, :headers, []) ++ Keyword.get(opts, :headers, []))
     req_options = req_options(config.req_options, opts)
-
-    request =
-      req_request(
-        method,
-        url,
-        config.base_url,
-        headers,
-        body,
-        config.encoding,
-        req_options,
-        path_params
-      )
-
+    request = req_request(method, url, config.base_url, headers, body, config.encoding, req_options, path_params)
     request = module.req(request)
 
     result = send_request(request)
